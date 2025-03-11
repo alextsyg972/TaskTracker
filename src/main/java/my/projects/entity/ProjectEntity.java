@@ -1,19 +1,20 @@
 package my.projects.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "project")
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
+@Builder
+@Getter
+@Setter
 public class ProjectEntity {
 
     @Id
@@ -23,41 +24,21 @@ public class ProjectEntity {
     @Column(unique = true)
     private String name;
 
+    @Builder.Default
     private Instant createdAt = Instant.now();
 
     @OneToMany
     private List<TaskStateEntity> taskStates = new ArrayList<>();
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProjectEntity project)) return false;
+        return Objects.equals(id, project.id) && Objects.equals(name, project.name) && Objects.equals(createdAt, project.createdAt) && Objects.equals(taskStates, project.taskStates);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, createdAt, taskStates);
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public List<TaskStateEntity> getTaskStates() {
-        return taskStates;
-    }
-
-    public void setTaskStates(List<TaskStateEntity> taskStates) {
-        this.taskStates = taskStates;
-    }
-
 }

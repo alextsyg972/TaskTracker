@@ -23,6 +23,7 @@ public class TaskStateEntity {
 
     @Column(unique = true)
     private String name;
+
     @Builder.Default
     private Instant createdAt = Instant.now();
 
