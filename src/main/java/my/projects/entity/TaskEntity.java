@@ -14,11 +14,12 @@ import java.time.Instant;
 public class TaskEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+
     private String name;
+
     @Builder.Default
     private Instant createdAt = Instant.now();
 

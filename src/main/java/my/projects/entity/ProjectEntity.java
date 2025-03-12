@@ -18,7 +18,7 @@ import java.util.Objects;
 public class ProjectEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
@@ -27,7 +27,9 @@ public class ProjectEntity {
     @Builder.Default
     private Instant createdAt = Instant.now();
 
+    @Builder.Default
     @OneToMany
+    @JoinColumn(name = "project_id")
     private List<TaskStateEntity> taskStates = new ArrayList<>();
 
     @Override

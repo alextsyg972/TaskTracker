@@ -1,10 +1,10 @@
 package my.projects.api.controller;
 
 import lombok.RequiredArgsConstructor;
+import my.projects.api.controller.helpers.ControllerHelper;
 import my.projects.api.dto.AskDto;
 import my.projects.api.dto.ProjectDto;
 import my.projects.api.exception.BadRequestException;
-import my.projects.api.exception.NotFoundException;
 import my.projects.api.factory.ProjectDtoFactory;
 import my.projects.entity.ProjectEntity;
 import my.projects.repository.ProjectRepository;
@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 @Transactional
 public class ProjectController {
 
-    private final ProjectDtoFactory projectDtoFactory;
     public static final String FETCH_PROJECTS = "/api/projects";
     public static final String CREATE_PROJECT = "/api/projects";
 //    public static final String EDIT_PROJECT = "/api/projects/{project_id}";
@@ -30,6 +29,10 @@ public class ProjectController {
 //    public static final String CREATE_OR_UPDATE_PROJECT = "/api/projects";
 
     private final ProjectRepository projectRepository;
+
+    private final ProjectDtoFactory projectDtoFactory;
+
+    private final ControllerHelper controllerHelper;
 
     @PutMapping(CREATE_PROJECT)
     public ProjectDto createOrUpdateProject(
@@ -47,7 +50,7 @@ public class ProjectController {
         }
 
         final ProjectEntity project = optionalProjectId
-                .map(this::getProjectOrThrewException)
+                .map(controllerHelper::getProjectOrThrewException)
                 .orElseGet(() -> ProjectEntity.builder().build());
 
 
@@ -131,18 +134,11 @@ public class ProjectController {
 
     @DeleteMapping(DELETE_PROJECT)
     public AskDto deleteProject(@PathVariable("project_id") Long projectId) {
-        getProjectOrThrewException(projectId);
+        controllerHelper.getProjectOrThrewException(projectId);
         projectRepository.deleteById(projectId);
 
         return AskDto.makeDefault(true);
     }
 
-    private ProjectEntity getProjectOrThrewException(Long projectId) {
-        return projectRepository
-                .findById(projectId)
-                .orElseThrow(() ->
-                        new NotFoundException("Project with " + projectId + " doesn't exist")
-                );
-    }
 
 }
